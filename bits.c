@@ -160,7 +160,7 @@ int fitsShort(int x) {
  *   Rating: 1
  */
 int thirdBits(void) {
-  return 2;
+  return (0x49 << 24) | (0x2 << 20) | (0x49 << 12) | (0x2 << 8) | 0x49;
 }
 /* 
  * anyEvenBit - return 1 if any even-numbered bit in word set to 1
