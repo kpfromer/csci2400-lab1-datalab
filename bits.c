@@ -180,7 +180,7 @@ int anyEvenBit(int x) {
  *   Rating: 2
  */
 int copyLSB(int x) {
-  return 2;
+  return x << 63 >> 63;
 }
 /* 
  * implication - return x -> y in propositional logic - 0 for false, 1
