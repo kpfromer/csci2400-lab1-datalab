@@ -170,7 +170,7 @@ int thirdBits(void) {
  *   Rating: 2
  */
 int anyEvenBit(int x) {
-  return 2;
+  return !!((0x55 << 24 | 0x55 << 16 | 0x55 << 8 | 0x55) & x);
 }
 /* 
  * copyLSB - set all bits of result to least significant bit of x
