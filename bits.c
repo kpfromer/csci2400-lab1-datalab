@@ -151,7 +151,7 @@ int bitNor(int x, int y) {
  *   Rating: 1
  */
 int fitsShort(int x) {
-  return 2;
+  return !(x >> 15) | !((x >> 15) ^ ~(0x0));
 }
 /* 
  * thirdBits - return word with every third bit (starting from the LSB) set to 1
