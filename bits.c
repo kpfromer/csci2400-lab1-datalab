@@ -205,7 +205,13 @@ int implication(int x, int y) {
  *   Rating: 3
  */
 int bitMask(int highbit, int lowbit) {
-  return 2;
+  int negOne = ~0;
+  int high = negOne << highbit << 1;
+  int low = negOne << lowbit;
+  int valid = high ^ low;
+  int negLowbit = (~lowbit) + 1;
+  int mask = ~((highbit + negLowbit) >> 31);
+  return mask & valid;
 }
 /*
  * ezThreeFourths - multiplies by 3/4 rounding toward 0,
