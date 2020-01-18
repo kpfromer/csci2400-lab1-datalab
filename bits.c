@@ -225,7 +225,11 @@ int bitMask(int highbit, int lowbit) {
  *   Rating: 3
  */
 int ezThreeFourths(int x) {
-  return 2;
+  int preDiv = ((x << 1) + x);
+  int div = (preDiv >> 2);
+  int isNeg = div >> 31;
+  int neg = !!(isNeg & (preDiv & 3)); // 3 = 0011 = number was truncated
+  return div + neg;
 }
 /*
  * satMul3 - multiplies by 3, saturating to Tmin or Tmax if overflow
