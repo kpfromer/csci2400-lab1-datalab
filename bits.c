@@ -129,9 +129,8 @@ NOTES:
  *      the correct answers.
  */
 
-
 #endif
-         
+
 /* 
  * bitNor - ~(x|y) using only ~ and & 
  *   Example: bitNor(0x6, 0x5) = 0xFFFFFFF8
@@ -139,7 +138,8 @@ NOTES:
  *   Max ops: 8
  *   Rating: 1
  */
-int bitNor(int x, int y) {
+int bitNor(int x, int y)
+{
   return (~x & ~y);
 }
 /* 
@@ -150,7 +150,8 @@ int bitNor(int x, int y) {
  *   Max ops: 8
  *   Rating: 1
  */
-int fitsShort(int x) {
+int fitsShort(int x)
+{
   return !(x >> 15) | !((x >> 15) ^ ~(0x0));
 }
 /* 
@@ -159,7 +160,8 @@ int fitsShort(int x) {
  *   Max ops: 8
  *   Rating: 1
  */
-int thirdBits(void) {
+int thirdBits(void)
+{
   return (0x49 << 24) | (0x2 << 20) | (0x49 << 12) | (0x2 << 8) | 0x49;
 }
 /* 
@@ -169,7 +171,8 @@ int thirdBits(void) {
  *   Max ops: 12
  *   Rating: 2
  */
-int anyEvenBit(int x) {
+int anyEvenBit(int x)
+{
   return !!((0x55 << 24 | 0x55 << 16 | 0x55 << 8 | 0x55) & x);
 }
 /* 
@@ -179,7 +182,8 @@ int anyEvenBit(int x) {
  *   Max ops: 5
  *   Rating: 2
  */
-int copyLSB(int x) {
+int copyLSB(int x)
+{
   return x << 31 >> 31;
 }
 /* 
@@ -191,8 +195,9 @@ int copyLSB(int x) {
  *   Max ops: 5
  *   Rating: 2
  */
-int implication(int x, int y) {
-    return y | !x;
+int implication(int x, int y)
+{
+  return y | !x;
 }
 /* 
  * bitMask - Generate a mask consisting of all 1's 
@@ -204,7 +209,8 @@ int implication(int x, int y) {
  *   Max ops: 16
  *   Rating: 3
  */
-int bitMask(int highbit, int lowbit) {
+int bitMask(int highbit, int lowbit)
+{
   int negOne = ~0;
   int high = negOne << highbit << 1;
   int low = negOne << lowbit;
@@ -224,7 +230,8 @@ int bitMask(int highbit, int lowbit) {
  *   Max ops: 12
  *   Rating: 3
  */
-int ezThreeFourths(int x) {
+int ezThreeFourths(int x)
+{
   int preDiv = ((x << 1) + x);
   int div = (preDiv >> 2);
   int isNeg = div >> 31;
@@ -242,8 +249,18 @@ int ezThreeFourths(int x) {
  *  Max ops: 25
  *  Rating: 3
  */
-int satMul3(int x) {
-    return 2;
+int satMul3(int x)
+{
+  int xSign = x >> 31;
+  int mul2 = x << 1;
+  int isNeg2 = mul2 >> 31;
+  int mul3 = mul2 + x;
+  int isNeg3 = mul3 >> 31;
+  int TMax = 1 << 31;
+  int TMin = ~TMax;
+  int overflow = (xSign ^ isNeg2) | (isNeg2 ^ isNeg3);
+
+  return (~overflow & mul3) | (overflow & (TMin ^ xSign));
 }
 /*
  * bitParity - returns 1 if x contains an odd number of 0's
@@ -252,7 +269,8 @@ int satMul3(int x) {
  *   Max ops: 20
  *   Rating: 4
  */
-int bitParity(int x) {
+int bitParity(int x)
+{
   return 2;
 }
 /*
@@ -262,7 +280,8 @@ int bitParity(int x) {
  *   Max ops: 90
  *   Rating: 4
  */
-int ilog2(int x) {
+int ilog2(int x)
+{
   return 2;
 }
 /*
@@ -293,8 +312,9 @@ int trueThreeFourths(int x)
  *   Max ops: 10
  *   Rating: 2
  */
-unsigned float_neg(unsigned uf) {
- return 2;
+unsigned float_neg(unsigned uf)
+{
+  return 2;
 }
 /* 
  * float_i2f - Return bit-level equivalent of expression (float) x
@@ -305,7 +325,8 @@ unsigned float_neg(unsigned uf) {
  *   Max ops: 30
  *   Rating: 4
  */
-unsigned float_i2f(int x) {
+unsigned float_i2f(int x)
+{
   return 2;
 }
 /* 
@@ -319,6 +340,7 @@ unsigned float_i2f(int x) {
  *   Max ops: 30
  *   Rating: 4
  */
-unsigned float_twice(unsigned uf) {
+unsigned float_twice(unsigned uf)
+{
   return 2;
 }
