@@ -271,7 +271,12 @@ int satMul3(int x)
  */
 int bitParity(int x)
 {
-  return 2;
+  int newX = (x >> 16) ^ x;
+  newX ^= (newX >> 8);
+  newX ^= (newX >> 4);
+  newX ^= (newX >> 2);
+  newX ^= (newX >> 1);
+  return newX & 1;
 }
 /*
  * ilog2 - return floor(log base 2 of x), where x > 0
