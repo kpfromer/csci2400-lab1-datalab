@@ -301,7 +301,15 @@ int ilog2(int x)
  */
 int trueThreeFourths(int x)
 {
-  return 2;
+  int preDiv = ((x << 1) + x);
+  int isNeg = x >> 31;
+  int half = x >> 2;
+  int fourth = x >> 1;
+  // (x & 1) since we only care about the 1/2 the 1 (2s place) is already accounted for
+  int frac = ((((x & 3) >> 1) + (x & 1)) >> 1);
+  int divThenMul = half + fourth;
+  int rounding = !!(isNeg & preDiv & 3);
+  return divThenMul + frac + rounding;
 }
 /*
  * Extra credit
