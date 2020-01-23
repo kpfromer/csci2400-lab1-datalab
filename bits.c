@@ -287,7 +287,30 @@ int bitParity(int x)
  */
 int ilog2(int x)
 {
-  return 2;
+  int inUpper;
+  int len = 31;
+
+  inUpper = (!!(x >> 16)) << 31 >> 31;
+  len = (inUpper & len) | (~inUpper & (len + (~16 + 1)));
+  x = ((x >> 16) & inUpper) | (~inUpper & x);
+
+  inUpper = (!!(x >> 8)) << 31 >> 31;
+  len = (inUpper & len) | (~inUpper & (len + (~8 + 1)));
+  x = ((x >> 8) & inUpper) | (~inUpper & x);
+
+  inUpper = (!!(x >> 4)) << 31 >> 31;
+  len = (inUpper & len) | (~inUpper & (len + (~4 + 1)));
+  x = ((x >> 4) & inUpper) | (~inUpper & x);
+
+  inUpper = (!!(x >> 2)) << 31 >> 31;
+  len = (inUpper & len) | (~inUpper & (len + (~2 + 1)));
+  x = ((x >> 2) & inUpper) | (~inUpper & x);
+
+  inUpper = (!!(x >> 1)) << 31 >> 31;
+  len = (inUpper & len) | (~inUpper & (len + (~1 + 1)));
+  x = ((x >> 1) & inUpper) | (~inUpper & x);
+
+  return len;
 }
 /*
  * trueThreeFourths - multiplies by 3/4 rounding toward 0,
