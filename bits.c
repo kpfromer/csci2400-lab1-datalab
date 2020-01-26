@@ -350,7 +350,13 @@ int trueThreeFourths(int x)
  */
 unsigned float_neg(unsigned uf)
 {
-  return 2;
+  int nan = (0xff << 23);
+  // all exponents are ones and one bit is filled in mantissa then uf is nan
+  if ((nan & uf) == nan && !!(uf << 9))
+  {
+    return uf;
+  }
+  return (1 << 31) ^ uf;
 }
 /* 
  * float_i2f - Return bit-level equivalent of expression (float) x
