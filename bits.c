@@ -1,7 +1,7 @@
 /* 
  * CS:APP Data Lab 
  * 
- * <Please put your name and userid here>
+ * Kyle Pfromer 109516228
  * 
  * bits.c - Source file with your solutions to the Lab.
  *          This is the file you will hand in to your instructor.
@@ -140,6 +140,7 @@ NOTES:
  */
 int bitNor(int x, int y)
 {
+  // The example problem
   return (~x & ~y);
 }
 /* 
@@ -152,7 +153,9 @@ int bitNor(int x, int y)
  */
 int fitsShort(int x)
 {
-  return !(x >> 15) | !((x >> 15) ^ ~(0x0));
+  int shiftedOut = (x >> 15);
+  int allOnes = ~(0x0);
+  return !shiftedOut | !(shiftedOut ^ allOnes);
 }
 /* 
  * thirdBits - return word with every third bit (starting from the LSB) set to 1
@@ -162,6 +165,7 @@ int fitsShort(int x)
  */
 int thirdBits(void)
 {
+  // Find the bit pattern to create an every third bits pattern then shift to make that literal
   return (0x49 << 24) | (0x2 << 20) | (0x49 << 12) | (0x2 << 8) | 0x49;
 }
 /* 
@@ -173,6 +177,8 @@ int thirdBits(void)
  */
 int anyEvenBit(int x)
 {
+  // Create mask of even number and mask x
+  // !! to create one if any values left, else zero
   return !!((0x55 << 24 | 0x55 << 16 | 0x55 << 8 | 0x55) & x);
 }
 /* 
@@ -184,6 +190,7 @@ int anyEvenBit(int x)
  */
 int copyLSB(int x)
 {
+  // Use arithmetic shift to copy bit
   return x << 31 >> 31;
 }
 /* 
@@ -197,6 +204,8 @@ int copyLSB(int x)
  */
 int implication(int x, int y)
 {
+  // Discrete math helped (equivalence table)
+  // implication is only false when x is true and y is not thus y | !x
   return y | !x;
 }
 /* 
@@ -212,11 +221,17 @@ int implication(int x, int y)
 int bitMask(int highbit, int lowbit)
 {
   int negOne = ~0;
+  // create a mask of ones from 31 bit to high + 1 bit
   int high = negOne << highbit << 1;
+  // create a mask of ones from 31 bit to low bit
   int low = negOne << lowbit;
+  // create a mask for the area (does not handle invalid overlap)
   int valid = high ^ low;
+  // negLowbit = -lowbit
   int negLowbit = (~lowbit) + 1;
+  // create a mask of zeros if high - lowbit is negitive, else all ones
   int mask = ~((highbit + negLowbit) >> 31);
+  // return masked valid values
   return mask & valid;
 }
 /*
@@ -232,9 +247,13 @@ int bitMask(int highbit, int lowbit)
  */
 int ezThreeFourths(int x)
 {
+  // multiply by 3
   int preDiv = ((x << 1) + x);
+  // divide by 4
   int div = (preDiv >> 2);
+  // Check if negitive
   int isNeg = div >> 31;
+  // return 1 if is negitive and lost data (round towards zero for negitive number)
   int neg = !!(isNeg & (preDiv & 3)); // 3 = 0011 = number was truncated
   return div + neg;
 }
@@ -251,15 +270,22 @@ int ezThreeFourths(int x)
  */
 int satMul3(int x)
 {
+  // used for checking if sign changed
   int xSign = x >> 31;
+  // x * 2
   int mul2 = x << 1;
+  // used for checking if sign changed
   int isNeg2 = mul2 >> 31;
+  // 2x + x = 3x
   int mul3 = mul2 + x;
+  // used for checking if sign changed
   int isNeg3 = mul3 >> 31;
   int TMax = 1 << 31;
   int TMin = ~TMax;
+  // Create mask of ones if sign changed
   int overflow = (xSign ^ isNeg2) | (isNeg2 ^ isNeg3);
-
+  // if overflow then return the max value if the number was initally positive, or min if intially negitive
+  // else return the number
   return (~overflow & mul3) | (overflow & (TMin ^ xSign));
 }
 /*
@@ -271,6 +297,7 @@ int satMul3(int x)
  */
 int bitParity(int x)
 {
+  // Xor all values in x, if there is odd number of 0's then final value is 1 else 0
   int newX = (x >> 16) ^ x;
   newX ^= (newX >> 8);
   newX ^= (newX >> 4);
@@ -290,8 +317,11 @@ int ilog2(int x)
   int inUpper;
   int len = 31;
 
+  // Create 1 mask if one in upper half, else zero
   inUpper = (!!(x >> 16)) << 31 >> 31;
+  // If there is a one in the upper half keep the len the same, else subtract the len by the half
   len = (inUpper & len) | (~inUpper & (len + (~16 + 1)));
+  // if in the upper half shift, else do nothing (nothing to the left so shift is not needed)
   x = ((x >> 16) & inUpper) | (~inUpper & x);
 
   inUpper = (!!(x >> 8)) << 31 >> 31;
@@ -324,13 +354,17 @@ int ilog2(int x)
  */
 int trueThreeFourths(int x)
 {
+  // copied from ezThreeFourths (used for rounding toward zero)
   int preDiv = ((x << 1) + x);
   int isNeg = x >> 31;
+  // Divide first to avoid overflow condition
   int half = x >> 2;
   int fourth = x >> 1;
+  // Accounts for lost data from the shifting (decimals in binary)
   // (x & 1) since we only care about the 1/2 the 1 (2s place) is already accounted for
   int frac = ((((x & 3) >> 1) + (x & 1)) >> 1);
   int divThenMul = half + fourth;
+  // Round toward zero for negitive numbers
   int rounding = !!(isNeg & preDiv & 3);
   return divThenMul + frac + rounding;
 }
@@ -370,6 +404,53 @@ unsigned float_neg(unsigned uf)
 unsigned float_i2f(int x)
 {
   return 2;
+  // int exp, tail;
+  // int high = 0;
+  // int pow = 0;
+  // int copy = x;
+
+  // if (x == 0)
+  //   return 0;
+  // else if (x == 0x80000000)
+  //   return 0xCF000000;
+
+  // if (x >> 31)
+  // {
+  //   x = -x;
+  // }
+
+  // while (copy > 1)
+  // {
+  //   if (pow == 0)
+  //   {
+  //     pow = 0;
+  //   }
+  //   else
+  //   {
+  //     pow *= 2;
+  //   }
+  //   copy >>= 1;
+  //   high++;
+  // }
+
+  // exp = 127 + high;
+  // // clear bits left of msb
+  // x <<= (31 - high);
+
+  // if (high > 23)
+  // {
+  //   tail = 0xff & x;
+  //   if ()
+  // }
+
+  // return (x >> 31 << 31) |
+  //        (exp << 23) | (x & 8388607 & ~pow);
+
+  // int highPower = 32;
+  // for (int i = 0; i < 32; i++)
+  // {
+  //   if (!!(x & ))
+  // }
 }
 /* 
  * float_twice - Return bit-level equivalent of expression 2*f for
