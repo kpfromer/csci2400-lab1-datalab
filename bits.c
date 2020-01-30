@@ -465,5 +465,30 @@ unsigned float_i2f(int x)
  */
 unsigned float_twice(unsigned uf)
 {
-  return 2;
+  unsigned sign = uf & 0x80000000;
+  unsigned exponent = uf & 0x7F800000;
+  unsigned mantissa = uf & 0x7FFFFF;
+  // return nan if nan
+  int nan = (0xff << 23);
+  // all exponents are ones and one bit is filled in mantissa then uf is nan
+  if ((nan & uf) == nan && !!mantissa)
+  {
+    return uf;
+  }
+  // if exp > 0 add one to exponent
+  if (!exponent)
+  {
+    mantissa = mantissa << 1;
+  }
+  else
+  {
+    exponent = exponent + 0x800000;
+  }
+  // check if new number is infinty (exp > ff) then return 7f800000 and correct sign
+  if (exponent >= 0x7F800000)
+  {
+    return 0x7F800000 | sign;
+  }
+  // if not return sign or exp or mantissa
+  return sign | exponent | mantissa;
 }
